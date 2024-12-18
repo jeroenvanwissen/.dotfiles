@@ -115,8 +115,14 @@ fi
 echo "🔗 Creating Tmux symlinks..."
 ln -sf $PWD/config/tmux/.tmux.conf ~/
 
-echo "📦 Installing TPM..."
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+# Install TPM (Tmux Plugin Manager) if not already installed
+TPM_PATH="$HOME/.tmux/plugins/tpm"
+if [ ! -d "$TPM_PATH" ]; then
+    echo "📦 Installing TPM..."
+    git clone https://github.com/tmux-plugins/tpm "$TPM_PATH"
+else
+    echo "✅ TPM already installed"
+fi
 
 # Install and configure Fish
 echo "📦 Installing Fish..."

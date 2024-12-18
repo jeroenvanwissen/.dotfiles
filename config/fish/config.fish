@@ -1,14 +1,17 @@
-eval (brew shellenv)
+# Figuring out where we have installed Homebrew
+if test -d /opt/homebrew/bin
+    set -gx PATH /opt/homebrew/bin $PATH
+else if test -d /usr/local/bin
+    set -gx PATH /usr/local/bin $PATH
+end
+
+set brew_path $(which brew)
+$brew_path shellenv | source
 
 if status is-interactive
     and not set -q TMUX
     tmux
 end
-
-# Initialize fnm
-# if test -d /opt/homebrew/bin
-#     set -gx PATH /opt/homebrew/bin $PATH
-# end
 
 if type -q fnm
     # Initialize fnm with shell completions and auto-use
@@ -51,7 +54,6 @@ starship init fish | source
 echo "🦄🦄🦄🦄🦄🦄🦄🦄🦄🦄"
 
 set -U fish_user_paths $HOME/.local/bin $fish_user_paths
-# set -U fish_user_paths $HOME/helix $fish_user_paths
 
 function removepath
     if set -l index (contains -i $argv[1] $PATH)
