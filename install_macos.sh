@@ -55,6 +55,13 @@ else
     brew install fnm
 fi
 
+# Initialize fnm and install Node.js
+echo "🔧 Initializing fnm..."
+eval "$(fnm env --use-on-cd)"
+echo "📥 Installing latest LTS version of Node.js..."
+fnm install --lts
+fnm use lts-latest
+
 # Install Python and pipx for Python language servers
 if ! command -v python3 &> /dev/null; then
     echo "📥 Installing Python..."
