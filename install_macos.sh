@@ -25,6 +25,15 @@ echo "📁 Creating config directories..."
 mkdir -p ~/.config/{kitty,fish,helix,tmux}
 mkdir -p ~/.local/bin
 
+# Install and configure GH CLI
+echo "📦 Installing GH CLI..."
+if brew list gh &>/dev/null; then
+    echo "✅ GH CLI already installed"
+else
+    echo "📥 Installing GH CLI..."
+    brew install gh
+fi
+
 # Install and configure Kitty
 echo "📦 Installing Kitty..."
 if brew list kitty &>/dev/null; then
