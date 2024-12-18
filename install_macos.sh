@@ -106,6 +106,9 @@ fi
 echo "🔗 Creating Tmux symlinks..."
 ln -sf $PWD/config/tmux/.tmux.conf ~/
 
+echo "📦 Installing TPM..."
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
 # Install and configure Fish
 echo "📦 Installing Fish..."
 if brew list fish &>/dev/null; then
