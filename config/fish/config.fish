@@ -1,4 +1,4 @@
-eval "$(/opt/homebrew/bin/brew shellenv)"
+eval (brew shellenv)
 
 if status is-interactive
     and not set -q TMUX
@@ -6,9 +6,9 @@ if status is-interactive
 end
 
 # Initialize fnm
-if test -d /opt/homebrew/bin
-    set -gx PATH /opt/homebrew/bin $PATH
-end
+# if test -d /opt/homebrew/bin
+#     set -gx PATH /opt/homebrew/bin $PATH
+# end
 
 if type -q fnm
     # Initialize fnm with shell completions and auto-use
