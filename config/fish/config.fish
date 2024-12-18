@@ -1,4 +1,7 @@
-eval "$(/opt/homebrew/bin/brew shellenv)"
+#eval "$(/opt/homebrew/bin/brew shellenv)"
+
+set brew_path $(which brew)
+$brew_path shellenv | source
 
 if status is-interactive
     and not set -q TMUX
@@ -15,7 +18,7 @@ if type -q fnm
     fnm env --use-on-cd --shell fish | source
 
     # Ensure we have a default Node.js version
-    if not fnm list | grep -q "default"
+    if not fnm list | grep -q default
         fnm install --lts
         fnm default (fnm list | grep "lts" | head -n1)
     end
