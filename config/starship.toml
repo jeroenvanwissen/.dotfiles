@@ -30,6 +30,7 @@ symbol = " "
 
 [git_branch]
 symbol = " "
+style = "#B3EB47"
 
 [git_commit]
 tag_symbol = '  '
@@ -163,11 +164,13 @@ symbol = " "
 # CUSTOM
 
 [character]
-success_symbol = "🦄 [](bold #A6E3A1)"  # Green for success
+success_symbol = "[❯](#B3EB47)"  # Green for success
+error_symbol = "[❯](#FF0000)"  # Green for success
 
 [directory]
+format = "[;//](#A966FF)[jeroenvanwissen](#FFA31A)[/](#A966FF)[$path]($style) "
 read_only = " 󰌾"
-style = "bold #F8BD96"  # Orange for directories
+style = "#FFA31A"  # Orange for directories
 
 [git_status]
 style = "#89DCEB"  # Blue for Git status
