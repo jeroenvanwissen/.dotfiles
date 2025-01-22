@@ -52,3 +52,7 @@ git-exclude = true
 [editor.search]
 smart-case = true
 wrap-around = true
+
+[keys.normal]
+C-g = [":new", ":insert-output lazygit", ":buffer-close!", ":redraw", ":rla"]
+C-r = ":rla"
