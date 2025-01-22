@@ -1,237 +1,110 @@
-# How to add LS: https://github.com/helix-editor/helix/wiki/Language-Server-Configurations
-# Preconfigured: https://github.com/helix-editor/helix/blob/master/languages.toml
+[[language]]
+name = "html"
+formatter = { command = 'npx', args = ["prettier", "--parser", "html"] }
+language-servers = [
+  "vscode-html-language-server",
+  "tailwindcss-react",
+]
+auto-format = true
+
+[[language]]
+name = "json"
+language-servers = ["vscode-json-language-server"]
+formatter = { command = 'npx', args = ["prettier", "--parser", "json"] }
+auto-format = true
+
+[[language]]
+name = "css"
+formatter = { command = 'npx', args = ["prettier", "--parser", "css"] }
+language-servers = [
+  "vscode-css-language-server",
+  "tailwindcss-react",
+]
+auto-format = true
 
 [[language]]
 name = "javascript"
-scope = "source.js"
-injection-regex = "(js|javascript)"
-language-id = "javascript"
-file-types = ["js", "mjs", "cjs", "rules", "es6", "pac", { glob = ".node_repl_history" }, { glob = "jakefile" }]
-shebangs = ["node"]
-roots = [ "package.json" ]
-comment-token = "//"
-block-comment-tokens = { start = "/*", end = "*/" }
-language-servers = [ "typescript-language-server", "vscode-eslint-language-server" ]
-indent = { tab-width = 2, unit = "  " }
+language-servers = [
+  "typescript-language-server",
+  "tailwindcss-react",
+  "eslint",
+]
+formatter = { command = 'npx', args = ["prettier", "--parser", "typescript"] }
+auto-format = true
 
-[language.debugger]
-name = "node-debug2"
-transport = "stdio"
-# args consisting of cmd (node) and path to adapter should be added to user's configuration
-quirks = { absolute-paths = true }
+[[language]]
+name = "typescript"
+language-servers = [
+  "typescript-language-server",
+  "tailwindcss-react",
+  "eslint",
+]
+formatter = { command = 'npx', args = ["prettier", "--parser", "typescript"] }
+auto-format = true
 
-[[language.debugger.templates]]
-name = "source"
-request = "launch"
-completion = [ { name = "main", completion = "filename", default = "index.js" } ]
-args = { program = "{0}" }
-
-[[grammar]]
-name = "javascript"
-source = { git = "https://github.com/tree-sitter/tree-sitter-javascript", rev = "f772967f7b7bc7c28f845be2420a38472b16a8ee" }
+[[language]]
+name = "tsx"
+language-servers = [
+  "typescript-language-server",
+  "tailwindcss-react",
+  "eslint",
+]
+formatter = { command = 'npx', args = ["prettier", "--parser", "typescript"] }
+auto-format = true
 
 [[language]]
 name = "jsx"
-scope = "source.jsx"
-injection-regex = "jsx"
-language-id = "javascriptreact"
-file-types = ["jsx"]
-roots = [ "package.json" ]
-comment-token = "//"
-block-comment-tokens = { start = "/*", end = "*/" }
-language-servers = [ "typescript-language-server" ]
-indent = { tab-width = 2, unit = "  " }
-grammar = "javascript"
-
-[[language]]
-name = "typescript"
-scope = "source.ts"
-injection-regex = "(ts|typescript)"
-language-id = "typescript"
-file-types = ["ts", "mts", "cts"]
-shebangs = ["deno", "bun", "ts-node"]
-roots = [ "package.json", "tsconfig.json" ]
-comment-token = "//"
-block-comment-tokens = { start = "/*", end = "*/" }
-language-servers = [ "typescript-language-server", "vscode-eslint-language-server" ]
-indent = { tab-width = 2, unit = "  " }
-
-[[grammar]]
-name = "typescript"
-source = { git = "https://github.com/tree-sitter/tree-sitter-typescript", rev = "b1bf4825d9eaa0f3bdeb1e52f099533328acfbdf", subpath = "typescript" }
-
-[[language]]
-name = "typespec"
-scope = "source.typespec"
-injection-regex = "(tsp|typespec)"
-language-id = "typespec"
-file-types = ["tsp"]
-roots = ["tspconfig.yaml"]
-auto-format = true
-comment-token = "//"
-block-comment-tokens = { start = "/*", end = "*/" }
-language-servers = ["typespec"]
-indent = { tab-width = 2, unit = "  " }
-
-[[grammar]]
-name = "typespec"
-source = { git = "https://github.com/happenslol/tree-sitter-typespec", rev = "0ee05546d73d8eb64635ed8125de6f35c77759fe" }
-
-[[language]]
-name = "tsx"
-scope = "source.tsx"
-injection-regex = "(tsx)" # |typescript
-language-id = "typescriptreact"
-file-types = ["tsx"]
-roots = [ "package.json", "tsconfig.json" ]
-comment-token = "//"
-block-comment-tokens = { start = "/*", end = "*/" }
-language-servers = [ "typescript-language-server" ]
-indent = { tab-width = 2, unit = "  " }
-
-[[grammar]]
-name = "tsx"
-source = { git = "https://github.com/tree-sitter/tree-sitter-typescript", rev = "b1bf4825d9eaa0f3bdeb1e52f099533328acfbdf", subpath = "tsx" }
-
-[[language]]
-name = "css"
-scope = "source.css"
-injection-regex = "css"
-file-types = ["css", "scss"]
-block-comment-tokens = { start = "/*", end = "*/" }
-language-servers = [ "vscode-css-language-server" ]
-auto-format = true
-indent = { tab-width = 2, unit = "  " }
-
-[[grammar]]
-name = "css"
-source = { git = "https://github.com/tree-sitter/tree-sitter-css", rev = "769203d0f9abe1a9a691ac2b9fe4bb4397a73c51" }
-
-[[language]]
-name = "scss"
-scope = "source.scss"
-injection-regex = "scss"
-file-types = ["scss"]
-block-comment-tokens = { start = "/*", end = "*/" }
-language-servers = [ "vscode-css-language-server" ]
-auto-format = true
-indent = { tab-width = 2, unit = "  " }
-
-[[grammar]]
-name = "scss"
-source = { git = "https://github.com/serenadeai/tree-sitter-scss", rev = "c478c6868648eff49eb04a4df90d703dc45b312a" }
-
-[[language]]
-name = "html"
-scope = "text.html.basic"
-injection-regex = "html"
-file-types = ["html", "htm", "shtml", "xhtml", "xht", "jsp", "asp", "aspx", "jshtm", "volt", "rhtml", "cshtml"]
-block-comment-tokens = { start = "<!--", end = "-->" }
-language-servers = [ "vscode-html-language-server", "superhtml" ]
-auto-format = true
-indent = { tab-width = 2, unit = "  " }
-
-[[grammar]]
-name = "html"
-source = { git = "https://github.com/tree-sitter/tree-sitter-html", rev = "29f53d8f4f2335e61bf6418ab8958dac3282077a" }
-
-[[language]]
-name = "bash"
-scope = "source.bash"
-injection-regex = "(shell|bash|zsh|sh)"
-file-types = [
-  "sh",
-  "bash",
-  "ash",
-  "dash",
-  "ksh",
-  "mksh",
-  "zsh",
-  "zshenv",
-  "zlogin",
-  "zlogout",
-  "zprofile",
-  "zshrc",
-  "eclass",
-  "ebuild",
-  "bazelrc",
-  "Renviron",
-  "zsh-theme",
-  "cshrc",
-  "tcshrc",
-  "bashrc_Apple_Terminal",
-  "zshrc_Apple_Terminal",
-  { glob = "i3/config" },
-  { glob = "sway/config" },
-  { glob = "tmux.conf" },
-  { glob = ".bash_history" },
-  { glob = ".bash_login" },
-  { glob = ".bash_logout" },
-  { glob = ".bash_profile" },
-  { glob = ".bashrc" },
-  { glob = ".profile" },
-  { glob = ".zshenv" },
-  { glob = ".zlogin" },
-  { glob = ".zlogout" },
-  { glob = ".zprofile" },
-  { glob = ".zshrc" },
-  { glob = ".zimrc" },
-  { glob = "APKBUILD" },
-  { glob = ".bash_aliases" },
-  { glob = ".Renviron" },
-  { glob = ".xprofile" },
-  { glob = ".xsession" },
-  { glob = ".xsessionrc" },
-  { glob = ".yashrc" },
-  { glob = ".yash_profile" },
-  { glob = ".hushlogin" },
+language-servers = [
+  "typescript-language-server",
+  "tailwindcss-react",
+  "eslint",
 ]
-shebangs = ["sh", "bash", "dash", "zsh"]
-comment-token = "#"
-language-servers = [ "bash-language-server" ]
-indent = { tab-width = 2, unit = "  " }
-
-[[grammar]]
-name = "bash"
-source = { git = "https://github.com/tree-sitter/tree-sitter-bash", rev = "f8fb3274f72a30896075585b32b0c54cad65c086" }
+grammar = "javascript"
+formatter = { command = 'npx', args = ["prettier", "--parser", "typescript"] }
+auto-format = true
 
 [[language]]
-name = "python"
-scope = "source.python"
-injection-regex = "py(thon)?"
-file-types = ["py", "pyi", "py3", "pyw", "ptl", "rpy", "cpy", "ipy", "pyt", { glob = ".python_history" }, { glob = ".pythonstartup" }, { glob = ".pythonrc" }, { glob = "SConstruct" }, { glob = "SConscript" }]
-shebangs = ["python"]
-roots = ["pyproject.toml", "setup.py", "poetry.lock", "pyrightconfig.json"]
-comment-token = "#"
-language-servers = ["ruff", "jedi", "pylsp", "pyright"]
-# TODO: pyls needs utf-8 offsets
-indent = { tab-width = 4, unit = "    " }
+name = "astro"
+scope = "source.astro"
+injection-regex = "astro"
+file-types = ["astro"]
+language-servers = ["astro-ls"]
+formatter = { command = "npx", args = ["prettier", "--plugin", "prettier-plugin-astro", "--parser", "astro"] }
+auto-format = true
 
-[[grammar]]
-name = "python"
-source = { git = "https://github.com/tree-sitter/tree-sitter-python", rev = "4bfdd9033a2225cc95032ce77066b7aeca9e2efc" }
+[language-server.astro-ls]
+command = "astro-ls"
+args = ["--stdio"]
+config = { typescript = { tsdk = "/Users/jeroen/.local/share/fnm/aliases/default/lib/node_modules/typescript/lib" }}
 
-[[language]]
-name = "markdown"
-scope = "source.md"
-injection-regex = "md|markdown"
-file-types = ["md", "livemd", "markdown", "mdx", "mkd", "mkdn", "mdwn", "mdown", "markdn", "mdtxt", "mdtext", "workbook", { glob = "PULLREQ_EDITMSG" }]
-roots = [".marksman.toml"]
-language-servers = [ "marksman", "markdown-oxide" ]
-indent = { tab-width = 2, unit = "  " }
-block-comment-tokens = { start = "<!--", end = "-->" }
+[language-server.vscode-json-language-server.config]
+json = { validate = { enable = true }, format = { enable = true } }
+provideFormatter = true
 
-[[grammar]]
-name = "markdown"
-source = { git = "https://github.com/tree-sitter-grammars/tree-sitter-markdown", rev = "62516e8c78380e3b51d5b55727995d2c511436d8", subpath = "tree-sitter-markdown" }
+[language-server.vscode-css-language-server.config]
+css = { validate = { enable = true } }
+scss = { validate = { enable = true } }
+less = { validate = { enable = true } }
+provideFormatter = true
 
-[[language]]
-name = "markdown.inline"
-scope = "source.markdown.inline"
-injection-regex = "markdown\\.inline"
-file-types = []
-grammar = "markdown_inline"
+[language-server.eslint]
+args = ["--stdio"]
+command = "vscode-eslint-language-server"
 
-[[grammar]]
-name = "markdown_inline"
-source = { git = "https://github.com/tree-sitter-grammars/tree-sitter-markdown", rev = "62516e8c78380e3b51d5b55727995d2c511436d8", subpath = "tree-sitter-markdown-inline" }
+[language-server.eslint.config]
+format = { enable = true }
+nodePath = ""
+quiet = false
+rulesCustomizations = []
+run = "onType"
+validate = "on"
+codeAction = { disableRuleComment = { enable = true, location = "separateLine" }, showDocumentation = { enable = false } }
+codeActionsOnSave = { mode = "all", "source.fixAll.eslint" = true }
+experimental = {}
+problems = { shortenToSingleLine = false }
+
+[language-server.tailwindcss-react]
+language-id = "typescriptreact"
+command = "tailwindcss-language-server"
+args = ["--stdio"]
+config = {}
