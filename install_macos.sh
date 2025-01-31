@@ -22,8 +22,9 @@ fi
 
 # Create necessary directories
 echo "📁 Creating config directories..."
-mkdir -p ~/.config/{kitty,fish,helix,tmux,ghostty}
+mkdir -p ~/.config/{kitty,fish,helix,tmux,ghostty,mc}
 mkdir -p ~/.local/bin
+mkdir -p ~/.local/share/mc/skins
 
 # Install and configure GH CLI
 echo "📦 Installing GH CLI..."
@@ -47,7 +48,7 @@ ln -sf $PWD/config/kitty/kitty.conf ~/.config/kitty/
 ln -sf $PWD/config/kitty/current-theme.conf ~/.config/kitty/
 
 # Install and configure Ghostty
-echo "📦 Installing Kitty..."
+echo "📦 Installing Ghostty..."
 if brew list ghostty &>/dev/null; then
     echo "✅ Ghostty already installed"
 else
@@ -56,6 +57,19 @@ else
 fi
 echo "🔗 Creating Ghostty symlinks..."
 ln -sf $PWD/config/ghostty/config ~/.config/ghostty/
+
+# Install and configure Midnight Commander
+echo "📦 Installing Midnight Commander..."
+if brew list mc &>/dev/null; then
+    echo "✅ Midnight Commander already installed"
+else
+    echo "📥 Installing Midnight Commander..."
+    brew install mc
+fi
+echo "🔗 Creating Midnight Commander symlinks..."
+ln -sf $PWD/config/mc/ini ~/.config/mc/
+ln -sf $PWD/config/mc/panels.ini ~/.config/mc/
+ln -sf $PWD/local/share/mc/skins/catppuccin.ini ~/.local/share/mc/skins/
 
 # Install and configure Helix
 echo "📦 Installing Helix and its dependencies..."
