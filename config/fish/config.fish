@@ -50,8 +50,6 @@ if type -q fnm
 end
 
 alias ll="ls -lh"
-alias mc="EDITOR=hx mc"
-
 starship init fish | source
 echo "🦄🦄🦄🦄🦄🦄🦄🦄🦄🦄"
 
