@@ -203,5 +203,6 @@ ln -sf $PWD/config/starship.toml ~/.config/
 # Set up custom scripts
 echo "🔗 Creating script symlinks..."
 ln -sf $PWD/bin/spotify-status ~/.local/bin/
+ln -sf $PWD/bin/spotify-status-mac ~/.local/bin/
 
 echo "✨ Installation complete! Please restart your terminal and run 'fish' to start using your new setup."
