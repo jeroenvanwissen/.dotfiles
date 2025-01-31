@@ -22,7 +22,7 @@ fi
 
 # Create necessary directories
 echo "📁 Creating config directories..."
-mkdir -p ~/.config/{kitty,fish,helix,tmux}
+mkdir -p ~/.config/{kitty,fish,helix,tmux,ghostty}
 mkdir -p ~/.local/bin
 
 # Install and configure GH CLI
@@ -45,6 +45,17 @@ fi
 echo "🔗 Creating Kitty symlinks..."
 ln -sf $PWD/config/kitty/kitty.conf ~/.config/kitty/
 ln -sf $PWD/config/kitty/current-theme.conf ~/.config/kitty/
+
+# Install and configure Ghostty
+echo "📦 Installing Kitty..."
+if brew list ghostty &>/dev/null; then
+    echo "✅ Ghostty already installed"
+else
+    echo "📥 Installing Ghostty..."
+    brew install ghostty
+fi
+echo "🔗 Creating Ghostty symlinks..."
+ln -sf $PWD/config/ghostty/config ~/.config/ghostty/
 
 # Install and configure Helix
 echo "📦 Installing Helix and its dependencies..."
