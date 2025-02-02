@@ -14,6 +14,13 @@ track=$(osascript -e 'tell application "Spotify" to name of current track' 2>/de
 artist=$(osascript -e 'tell application "Spotify" to artist of current track' 2>/dev/null)
 position=$(osascript -e 'tell application "Spotify" to player position' 2>/dev/null | awk '{printf "%02d:%02d", $1/60, $1%60}')
 duration=$(osascript -e 'tell application "Spotify" to duration of current track' 2>/dev/null | awk '{printf "%02d:%02d", $1/60000, ($1/1000)%60}')
+state=$(osascript -e 'tell application "Spotify" player state' 2>/dev/null)
+
+# Check if Spotify is actually playing any track first
+if [ "$state" != "playing" ]; then
+    echo "No track playing"
+    exit 0
+fi
 
 # Display output if track and artist exist
 if [ -n "$track" ] && [ -n "$artist" ]; then
