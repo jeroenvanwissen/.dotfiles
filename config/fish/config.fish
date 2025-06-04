@@ -1,6 +1,7 @@
 # Figuring out where we have installed Homebrew
 if test -d /opt/homebrew/bin
     set -gx PATH /opt/homebrew/bin $PATH
+    # set -Ua fish_user_paths /opt/homebrew/lib/ruby/gems/3.4.0/bin
 else if test -d /usr/local/bin
     set -gx PATH /usr/local/bin $PATH
 end
@@ -63,3 +64,7 @@ function removepath
         echo "$argv[1] not found in PATH: $PATH"
     end
 end
+
+# Added by OrbStack: command-line tools and integration
+# This won't be added again if you remove it.
+source ~/.orbstack/shell/init.fish 2>/dev/null || :
