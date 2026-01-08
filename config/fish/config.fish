@@ -6,11 +6,16 @@ else if test -d /usr/local/bin
     set -gx PATH /usr/local/bin $PATH
 end
 
-set brew_path $(which brew)
-$brew_path shellenv | source
+# Initialize Homebrew environment if available
+if command -v brew >/dev/null 2>&1
+    eval (brew shellenv)
+end
 
+# Auto-start tmux for interactive sessions, but not in VSCode or if already in tmux
 if status is-interactive
     and not set -q TMUX
+    and not set -q VSCODE_INJECTION
+    and test "$TERM_PROGRAM" != "vscode"
     tmux
 end
 

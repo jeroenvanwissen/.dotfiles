@@ -15,6 +15,7 @@ sudo apt install -y \
     curl \
     wget \
     git \
+    unzip \
     build-essential \
     pkg-config \
     python3 \
@@ -23,9 +24,8 @@ sudo apt install -y \
 
 # Create necessary directories
 echo "📁 Creating config directories..."
-mkdir -p ~/.config/{fish,helix,tmux,mc}
+mkdir -p ~/.config/{fish,helix,tmux}
 mkdir -p ~/.local/bin
-mkdir -p ~/.local/share/mc/skins
 
 # Install and configure GH CLI
 echo "📦 Installing GH CLI..."
@@ -62,8 +62,8 @@ fnm use lts-latest
 
 # Install pipx
 echo "📥 Installing pipx..."
-python3 -m pip install --user pipx
-python3 -m pipx ensurepath
+sudo apt install -y pipx
+pipx ensurepath
 
 echo "📥 Installing Language Servers..."
 # JavaScript/TypeScript language servers
@@ -92,7 +92,7 @@ ln -sf $PWD/config/helix/languages.toml ~/.config/helix/
 echo "📦 Installing Tmux..."
 sudo apt install -y tmux
 echo "🔗 Creating Tmux symlinks..."
-ln -sf $PWD/config/tmux/.tmux.conf ~/
+ln -sf $PWD/config/tmux/.tmux.conf ~/.config/tmux/
 
 # Install TPM
 TPM_PATH="$HOME/.tmux/plugins/tpm"

@@ -22,9 +22,8 @@ fi
 
 # Create necessary directories
 echo "📁 Creating config directories..."
-mkdir -p ~/.config/{kitty,fish,helix,tmux,ghostty,mc}
+mkdir -p ~/.config/{kitty,fish,helix,tmux}
 mkdir -p ~/.local/bin
-mkdir -p ~/.local/share/mc/skins
 
 # Install and configure GH CLI
 echo "📦 Installing GH CLI..."
@@ -46,30 +45,6 @@ fi
 echo "🔗 Creating Kitty symlinks..."
 ln -sf $PWD/config/kitty/kitty.conf ~/.config/kitty/
 ln -sf $PWD/config/kitty/current-theme.conf ~/.config/kitty/
-
-# Install and configure Ghostty
-echo "📦 Installing Ghostty..."
-if brew list ghostty &>/dev/null; then
-    echo "✅ Ghostty already installed"
-else
-    echo "📥 Installing Ghostty..."
-    brew install ghostty
-fi
-echo "🔗 Creating Ghostty symlinks..."
-ln -sf $PWD/config/ghostty/config ~/.config/ghostty/
-
-# Install and configure Midnight Commander
-echo "📦 Installing Midnight Commander..."
-if brew list mc &>/dev/null; then
-    echo "✅ Midnight Commander already installed"
-else
-    echo "📥 Installing Midnight Commander..."
-    brew install mc
-fi
-echo "🔗 Creating Midnight Commander symlinks..."
-ln -sf $PWD/config/mc/ini ~/.config/mc/
-ln -sf $PWD/config/mc/panels.ini ~/.config/mc/
-ln -sf $PWD/local/share/mc/skins/catppuccin.ini ~/.local/share/mc/skins/
 
 # Install and configure Helix
 echo "📦 Installing Helix and its dependencies..."
@@ -138,7 +113,7 @@ else
     brew install tmux
 fi
 echo "🔗 Creating Tmux symlinks..."
-ln -sf $PWD/config/tmux/.tmux.conf ~/
+ln -sf $PWD/config/tmux/.tmux.conf ~/.config/tmux/
 
 # Install TPM (Tmux Plugin Manager) if not already installed
 TPM_PATH="$HOME/.tmux/plugins/tpm"
@@ -170,14 +145,6 @@ if [[ $SHELL != "$FISH_PATH" ]]; then
     chsh -s "$FISH_PATH"
 fi
 
-# Install Oh My Fish
-echo "🎣 Installing Oh My Fish..."
-if ! command -v omf &> /dev/null; then
-    curl -L https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install > omf-install
-    fish omf-install --noninteractive --yes
-    rm omf-install
-fi
-
 # Install Fisher
 echo "🎣 Installing Fisher..."
 if ! fish -c "functions -q fisher" &> /dev/null; then
@@ -199,8 +166,5 @@ if ! command -v starship &> /dev/null; then
 fi
 echo "🔗 Creating Starship symlinks..."
 ln -sf $PWD/config/starship.toml ~/.config/
-
-# Set up custom scripts
-echo "🔗 Creating script symlinks..."
 
 echo "✨ Installation complete! Please restart your terminal and run 'fish' to start using your new setup."
