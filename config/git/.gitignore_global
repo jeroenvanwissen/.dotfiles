@@ -1,0 +1,55 @@
+# === macOS ===
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# === Editors ===
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# === Node.js ===
+node_modules/
+npm-debug.log*
+yarn-error.log
+.pnpm-debug.log*
+
+# === Rust ===
+target/
+Cargo.lock
+# (keep Cargo.lock for binaries, ignore for libraries — handle per-repo)
+
+# === Swift / Xcode ===
+.build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.moved-aside
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+
+# === Environment ===
+.env
+.env.local
+.env*.local
+
+# === Misc ===
+*.log
+.cache/
+.turbo/

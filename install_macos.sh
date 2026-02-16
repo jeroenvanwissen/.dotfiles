@@ -1,15 +1,31 @@
 #!/bin/bash
-
-# Exit on error
 set -e
 
 echo "🚀 Starting macOS setup..."
+
+# Backup existing files before overwriting (skips symlinks for idempotent re-runs)
+backup_if_exists() {
+    local file="$1"
+    if [ -e "$file" ] && [ ! -L "$file" ]; then
+        local backup="${file}.backup.$(date +%Y%m%d%H%M%S)"
+        echo "📦 Backing up $file → $backup"
+        mv "$file" "$backup"
+    fi
+}
+
+# Pre-flight: Xcode Command Line Tools
+if ! xcode-select -p &>/dev/null; then
+    echo "📥 Installing Xcode Command Line Tools..."
+    xcode-select --install
+    echo "⏳ Please complete the Xcode CLT installation, then re-run this script."
+    exit 1
+fi
 
 # Check for Homebrew and install if not present
 if ! command -v brew &> /dev/null; then
     echo "🍺 Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    
+
     # Add Homebrew to PATH for Apple Silicon Macs
     if [[ $(uname -m) == 'arm64' ]]; then
         echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zprofile
@@ -20,151 +36,130 @@ else
     brew update
 fi
 
+# Install Homebrew packages from Brewfile
+echo "📦 Installing Homebrew packages..."
+brew bundle --file=$PWD/Brewfile
+
 # Create necessary directories
 echo "📁 Creating config directories..."
-mkdir -p ~/.config/{kitty,fish,helix,tmux}
+mkdir -p ~/.config/{kitty,helix,yazi,opencode}
 mkdir -p ~/.local/bin
 
-# Install and configure GH CLI
-echo "📦 Installing GH CLI..."
-if brew list gh &>/dev/null; then
-    echo "✅ GH CLI already installed"
+# Install and configure ZSH + Oh My ZSH
+echo "📦 Installing Oh My ZSH..."
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    echo "📥 Installing Oh My ZSH..."
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 else
-    echo "📥 Installing GH CLI..."
-    brew install gh
+    echo "✅ Oh My ZSH already installed"
 fi
 
-# Install and configure Kitty
-echo "📦 Installing Kitty..."
-if brew list kitty &>/dev/null; then
-    echo "✅ Kitty already installed"
+# Install ZSH plugins
+echo "📦 Installing ZSH plugins..."
+ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
 else
-    echo "📥 Installing Kitty..."
-    brew install kitty
+    echo "✅ zsh-autosuggestions already installed"
 fi
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+else
+    echo "✅ zsh-syntax-highlighting already installed"
+fi
+
+# Set ZSH as default shell
+ZSH_PATH=$(which zsh)
+if [[ "$SHELL" != "$ZSH_PATH" ]]; then
+    echo "🐚 Setting ZSH as default shell..."
+    chsh -s "$ZSH_PATH"
+fi
+
+echo "🔗 Creating ZSH symlinks..."
+backup_if_exists ~/.zshrc
+backup_if_exists ~/.zprofile
+ln -sf $PWD/config/zsh/.zshrc ~/
+ln -sf $PWD/config/zsh/.zprofile ~/
+
+# Install NVM + Node.js
+echo "📦 Installing NVM..."
+if [ ! -d "$HOME/.nvm" ]; then
+    echo "📥 Installing NVM (latest)..."
+    NVM_VERSION=$(curl -fsSL https://api.github.com/repos/nvm-sh/nvm/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+    curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh" | bash
+else
+    echo "✅ NVM already installed"
+fi
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+echo "📥 Installing Node.js LTS..."
+nvm install --lts
+
+# Python and pipx are installed via Brewfile
+if ! command -v pipx &> /dev/null; then
+    pipx ensurepath
+fi
+
+# GH CLI is installed via Brewfile
+
+# Kitty is installed via Brewfile
 echo "🔗 Creating Kitty symlinks..."
 ln -sf $PWD/config/kitty/kitty.conf ~/.config/kitty/
 ln -sf $PWD/config/kitty/current-theme.conf ~/.config/kitty/
 
-# Install and configure Helix
-echo "📦 Installing Helix and its dependencies..."
-if brew list helix &>/dev/null; then
-    echo "✅ Helix already installed"
-else
-    echo "📥 Installing Helix..."
-    brew install helix
-fi
-
-# Install fnm (Fast Node Manager)
-echo "📦 Installing fnm..."
-if brew list fnm &>/dev/null; then
-    echo "✅ fnm already installed"
-else
-    echo "📥 Installing fnm..."
-    brew install fnm
-fi
-
-# Initialize fnm and install Node.js
-echo "🔧 Initializing fnm..."
-eval "$(fnm env --use-on-cd)"
-echo "📥 Installing latest LTS version of Node.js..."
-fnm install --lts
-fnm use lts-latest
-
-# Install Python and pipx for Python language servers
-if ! command -v python3 &> /dev/null; then
-    echo "📥 Installing Python..."
-    brew install python
-fi
-
-if ! command -v pipx &> /dev/null; then
-    echo "📥 Installing pipx..."
-    brew install pipx
-    pipx ensurepath
-fi
+# Helix is installed via Brewfile
 
 echo "📥 Installing Language Servers..."
 # JavaScript/TypeScript language servers
 npm install -g typescript-language-server typescript
-npm install -g vscode-langservers-extracted # Provides HTML, CSS, and ESLint servers
+npm install -g vscode-langservers-extracted
 
 # Bash language server
 npm install -g bash-language-server
 
-# Python language servers
-pipx install 'python-lsp-server[all]' # pylsp
-pipx install ruff-lsp # ruff
-pipx install jedi-language-server # jedi
-npm install -g pyright # pyright
+# YAML language server
+npm install -g yaml-language-server
 
-# Markdown language server
-brew install marksman
+# Python language servers
+pipx install 'python-lsp-server[all]'
+pipx install ruff
+pipx install jedi-language-server
+npm install -g pyright
+
+# Marksman, rust-analyzer, taplo are installed via Brewfile
 
 echo "🔗 Creating Helix symlinks..."
 ln -sf $PWD/config/helix/config.toml ~/.config/helix/
 ln -sf $PWD/config/helix/languages.toml ~/.config/helix/
 
-# Install and configure Tmux
-echo "📦 Installing Tmux..."
-if brew list tmux &>/dev/null; then
-    echo "✅ Tmux already installed"
-else
-    echo "📥 Installing Tmux..."
-    brew install tmux
-fi
-echo "🔗 Creating Tmux symlinks..."
-ln -sf $PWD/config/tmux/.tmux.conf ~/.config/tmux/
-
-# Install TPM (Tmux Plugin Manager) if not already installed
-TPM_PATH="$HOME/.tmux/plugins/tpm"
-if [ ! -d "$TPM_PATH" ]; then
-    echo "📦 Installing TPM..."
-    git clone https://github.com/tmux-plugins/tpm "$TPM_PATH"
-else
-    echo "✅ TPM already installed"
-fi
-
-# Install and configure Fish
-echo "📦 Installing Fish..."
-if brew list fish &>/dev/null; then
-    echo "✅ Fish already installed"
-else
-    echo "📥 Installing Fish..."
-    brew install fish
-fi
-
-# Set up fish as default shell if it isn't already
-FISH_PATH=$(which fish)
-if ! grep -q "$FISH_PATH" /etc/shells; then
-    echo "🐟 Adding Fish to allowed shells..."
-    echo "$FISH_PATH" | sudo tee -a /etc/shells
-fi
-
-if [[ $SHELL != "$FISH_PATH" ]]; then
-    echo "🐟 Setting Fish as default shell..."
-    chsh -s "$FISH_PATH"
-fi
-
-# Install Fisher
-echo "🎣 Installing Fisher..."
-if ! fish -c "functions -q fisher" &> /dev/null; then
-    curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
-fi
-
-# Install fish plugins
-echo "🔌 Installing Fish plugins..."
-fish -c "fisher install budimanjojo/tmux.fish"
-
-echo "🔗 Creating Fish symlinks..."
-ln -sf $PWD/config/fish/config.fish ~/.config/fish/
-ln -sf $PWD/config/fish/fish_plugins ~/.config/fish/
-
-# Install and configure Starship
-echo "🚀 Installing Starship..."
-if ! command -v starship &> /dev/null; then
-    curl -sS https://starship.rs/install.sh | sh
-fi
+# Starship is installed via Brewfile
 echo "🔗 Creating Starship symlinks..."
 ln -sf $PWD/config/starship.toml ~/.config/
 
-echo "✨ Installation complete! Please restart your terminal and run 'fish' to start using your new setup."
+# Yazi is installed via Brewfile
+echo "🔗 Creating Yazi symlinks..."
+ln -sf $PWD/config/yazi ~/.config/
+
+# Install Yazi plugins
+echo "📦 Installing Yazi plugins..."
+if command -v ya &>/dev/null; then
+    ya pkg add yazi-rs/plugins:git
+fi
+
+# OpenCode is installed via Brewfile
+echo "🔗 Creating OpenCode config symlinks..."
+mkdir -p ~/.config/opencode
+ln -sf $PWD/config/opencode/opencode.json ~/.config/opencode/
+
+# Git config
+echo "🔗 Creating Git config symlinks..."
+backup_if_exists ~/.gitconfig
+ln -sf $PWD/config/git/.gitconfig ~/
+ln -sf $PWD/config/git/.gitignore_global ~/
+
+# Set up custom scripts
+echo "🔗 Creating script symlinks..."
+ln -sf $PWD/bin/split-kitten ~/.local/bin/
+ln -sf $PWD/bin/update-tools ~/.local/bin/
+
+echo "✨ Installation complete! Please restart your terminal."

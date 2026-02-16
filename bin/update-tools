@@ -1,0 +1,51 @@
+#!/bin/bash
+set -e
+
+echo "🔄 Updating all tools..."
+
+# Homebrew
+if command -v brew &> /dev/null; then
+    echo ""
+    echo "🍺 Updating Homebrew packages..."
+    brew update
+    brew upgrade
+    brew cleanup
+fi
+
+# Oh My ZSH
+if [ -d "$HOME/.oh-my-zsh" ]; then
+    echo ""
+    echo "📦 Updating Oh My ZSH..."
+    env ZSH="$HOME/.oh-my-zsh" sh "$HOME/.oh-my-zsh/tools/upgrade.sh"
+fi
+
+# NVM + Node.js
+if [ -d "$HOME/.nvm" ]; then
+    echo ""
+    echo "📦 Updating NVM..."
+    cd "$HOME/.nvm" && git fetch --tags origin && git checkout "$(git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1))" && cd -
+
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+    echo "📦 Updating Node.js LTS..."
+    nvm install --lts --reinstall-packages-from=current
+    nvm alias default lts/*
+fi
+
+# npm global packages
+if command -v npm &> /dev/null; then
+    echo ""
+    echo "📦 Updating global npm packages..."
+    npm update -g
+fi
+
+# pipx packages
+if command -v pipx &> /dev/null; then
+    echo ""
+    echo "🐍 Updating pipx packages..."
+    pipx upgrade-all
+fi
+
+echo ""
+echo "✨ All tools updated!"

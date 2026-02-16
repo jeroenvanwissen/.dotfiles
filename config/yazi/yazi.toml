@@ -1,0 +1,24 @@
+[mgr]
+ratio = [1, 4, 3]
+sort_by = "natural"
+sort_dir_first = true
+show_hidden = true
+
+[preview]
+max_width = 1000
+max_height = 1000
+
+[opener]
+edit = [
+  { run = 'hx "$@"', block = true }
+]
+open = [
+  { run = 'open "$@"' }
+]
+
+[open]
+rules = [
+  { name = "*.html", use = "open" },
+  { mime = "image/*", use = "open" },
+  { mime = "*", use = "edit" }
+]

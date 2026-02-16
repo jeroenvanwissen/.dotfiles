@@ -1,0 +1,48 @@
+[user]
+	name = Jeroen van Wissen
+	email = jeroen.van.wissen@gmail.com
+
+[init]
+	defaultBranch = main
+
+[core]
+	editor = hx
+	autocrlf = input
+	excludesfile = ~/.gitignore_global
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	side-by-side = true
+	line-numbers = true
+	syntax-theme = Catppuccin Mocha
+
+[merge]
+	conflictstyle = zdiff3
+
+[diff]
+	colorMoved = default
+
+[pull]
+	rebase = true
+
+[push]
+	autoSetupRemote = true
+
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	lg = log --oneline --graph --decorate --all
+	last = log -1 HEAD
+	unstage = reset HEAD --
+
+[color]
+	ui = auto
+
+# Machine-specific overrides (e.g., work email):
+# [include]
+#     path = ~/.gitconfig.local

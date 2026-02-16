@@ -1,0 +1,22 @@
+# Yazi keymap configuration
+# https://yazi-rs.github.io/docs/configuration/keymap
+
+[mgr]
+prepend_keymap = [
+  # Navigation
+  { on = ["g", "h"], run = "cd ~",             desc = "Go to home dir" },
+  { on = ["g", "c"], run = "cd ~/.config",     desc = "Go to config dir" },
+  { on = ["g", "d"], run = "cd ~/Downloads",   desc = "Go to downloads" },
+  { on = ["g", "p"], run = "cd ~/Projects",    desc = "Go to projects" },
+  { on = ["g", "D"], run = "cd ~/.dotfiles",   desc = "Go to dotfiles" },
+  { on = ["g", "r"], run = 'shell -- ya emit cd "$(git rev-parse --show-toplevel)"', desc = "Go to git root" },
+
+  # Shell & tools
+  { on = ["<C-s>"],  run = "shell '$SHELL' --block --confirm",   desc = "Open shell here" },
+  { on = ["<C-g>"],  run = "shell 'lazygit' --block --confirm",  desc = "Open lazygit" },
+  { on = ["<C-o>"],  run = "shell 'opencode' --block --confirm", desc = "Open OpenCode" },
+
+  # Selection helpers
+  { on = ["<C-a>"],  run = "select_all --state=true",          desc = "Select all" },
+  { on = ["<C-d>"],  run = "select_all --state=false",         desc = "Deselect all" },
+]

@@ -55,4 +55,5 @@ wrap-around = true
 
 [keys.normal]
 C-g = [":new", ":insert-output lazygit", ":buffer-close!", ":redraw", ":rla"]
+C-y = [":new", ":insert-output yazi", ":buffer-close!", ":redraw", ":rla"]
 C-r = ":rla"

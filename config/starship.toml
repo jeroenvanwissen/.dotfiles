@@ -165,7 +165,7 @@ symbol = " "
 
 [character]
 success_symbol = "[❯](#B3EB47)"  # Green for success
-error_symbol = "[❯](#FF0000)"  # Green for success
+error_symbol = "[❯](#FF0000)"  # Red for error
 
 [directory]
 format = "[;//](#A966FF)[jeroenvanwissen](#FFA31A)[/](#A966FF)[$path]($style) "

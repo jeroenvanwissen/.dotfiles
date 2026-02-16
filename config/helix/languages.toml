@@ -75,7 +75,8 @@ auto-format = true
 [language-server.astro-ls]
 command = "astro-ls"
 args = ["--stdio"]
-config = { typescript = { tsdk = "/Users/jeroen/.local/share/fnm/aliases/default/lib/node_modules/typescript/lib" }}
+# tsdk path assumes NVM default Node version; update if your Node version changes
+config = { typescript = { tsdk = "~/.nvm/versions/node/default/lib/node_modules/typescript/lib" }}
 
 [language-server.vscode-json-language-server.config]
 json = { validate = { enable = true }, format = { enable = true } }
@@ -108,3 +109,79 @@ language-id = "typescriptreact"
 command = "tailwindcss-language-server"
 args = ["--stdio"]
 config = {}
+
+# --- Rust ---
+
+[[language]]
+name = "rust"
+language-servers = ["rust-analyzer"]
+auto-format = true
+
+[language-server.rust-analyzer]
+command = "rust-analyzer"
+
+[language-server.rust-analyzer.config]
+check.command = "clippy"
+cargo.allFeatures = true
+procMacro.enable = true
+inlayHints.closingBraceHints.minLines = 10
+inlayHints.lifetimeElisionHints.enable = "never"
+
+# --- Swift ---
+
+[[language]]
+name = "swift"
+language-servers = ["sourcekit-lsp"]
+auto-format = true
+formatter = { command = "swiftformat", args = ["--stdinpath", "file.swift"] }
+
+[language-server.sourcekit-lsp]
+command = "sourcekit-lsp"
+
+# --- TOML ---
+
+[[language]]
+name = "toml"
+language-servers = ["taplo"]
+formatter = { command = "taplo", args = ["fmt", "-"] }
+auto-format = true
+
+[language-server.taplo]
+command = "taplo"
+args = ["lsp", "stdio"]
+
+# --- YAML ---
+
+[[language]]
+name = "yaml"
+language-servers = ["yaml-language-server"]
+auto-format = true
+
+[language-server.yaml-language-server]
+command = "yaml-language-server"
+args = ["--stdio"]
+
+[language-server.yaml-language-server.config]
+yaml = { validate = true, schemaStore = { enable = true } }
+
+# --- Bash ---
+
+[[language]]
+name = "bash"
+language-servers = ["bash-language-server"]
+auto-format = false
+
+[language-server.bash-language-server]
+command = "bash-language-server"
+args = ["start"]
+
+# --- Markdown ---
+
+[[language]]
+name = "markdown"
+language-servers = ["marksman"]
+auto-format = false
+
+[language-server.marksman]
+command = "marksman"
+args = ["server"]
