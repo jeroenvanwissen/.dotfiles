@@ -7,7 +7,8 @@ echo "🚀 Starting Linux setup..."
 backup_if_exists() {
     local file="$1"
     if [ -e "$file" ] && [ ! -L "$file" ]; then
-        local backup="${file}.backup.$(date +%Y%m%d%H%M%S)"
+        local backup
+        backup="${file}.backup.$(date +%Y%m%d%H%M%S)"
         echo "📦 Backing up $file → $backup"
         mv "$file" "$backup"
     fi
@@ -65,7 +66,7 @@ esac
 
 # Create necessary directories
 echo "📁 Creating config directories..."
-mkdir -p ~/.config/{helix,yazi,opencode}
+mkdir -p ~/.config/{ghostty,helix,yazi,opencode}
 mkdir -p ~/.local/bin
 
 # ── ZSH + Oh My ZSH ────────────────────────────────────────────────
@@ -96,10 +97,12 @@ else
 fi
 
 # Set ZSH as default shell
-ZSH_PATH=$(which zsh)
-if [[ "$SHELL" != "$ZSH_PATH" ]]; then
+if [[ "$(basename "$SHELL")" != "zsh" ]]; then
+    ZSH_PATH=$(which zsh)
     echo "🐚 Setting ZSH as default shell..."
     chsh -s "$ZSH_PATH"
+else
+    echo "✅ ZSH is already the default shell"
 fi
 
 echo "🔗 Creating ZSH symlinks..."
@@ -187,9 +190,9 @@ if ! command -v taplo &>/dev/null; then
 fi
 
 # Python language servers
-pipx install 'python-lsp-server[all]'
-pipx install ruff
-pipx install jedi-language-server
+pipx install 'python-lsp-server[all]' 2>/dev/null || pipx upgrade 'python-lsp-server[all]'
+pipx install ruff 2>/dev/null || pipx upgrade ruff
+pipx install jedi-language-server 2>/dev/null || pipx upgrade jedi-language-server
 
 # Markdown language server
 ARCH=$(uname -m)
@@ -208,6 +211,18 @@ fi
 echo "🔗 Creating Helix symlinks..."
 ln -sf "$PWD/config/helix/config.toml" ~/.config/helix/
 ln -sf "$PWD/config/helix/languages.toml" ~/.config/helix/
+
+# ── Ghostty ─────────────────────────────────────────────────────────────────
+echo "📦 Installing Ghostty..."
+if ! command -v ghostty &>/dev/null; then
+    echo "📝 Ghostty must be installed manually on Linux."
+    echo "   See: https://ghostty.org/docs/install/binary"
+else
+    echo "✅ Ghostty already installed"
+fi
+echo "🔗 Creating Ghostty symlinks..."
+ln -sf "$PWD/config/ghostty/config" ~/.config/ghostty/
+ln -sf "$PWD/config/ghostty/themes" ~/.config/ghostty/
 
 # ── Starship ────────────────────────────────────────────────────────
 echo "📦 Installing Starship..."
@@ -266,7 +281,7 @@ ln -sf "$PWD/config/yazi" ~/.config/
 # Install Yazi plugins
 echo "📦 Installing Yazi plugins..."
 if command -v ya &>/dev/null; then
-    ya pkg add yazi-rs/plugins:git
+    ya pkg install
 fi
 
 # ── git-delta ───────────────────────────────────────────────────────

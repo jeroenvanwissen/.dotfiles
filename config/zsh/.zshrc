@@ -1,6 +1,9 @@
+#!/usr/bin/env zsh
+# shellcheck shell=bash
 # === Oh My ZSH ===
 export ZSH="$HOME/.oh-my-zsh"
-plugins=(git fzf zsh-autosuggestions zsh-syntax-highlighting)
+export plugins=(git fzf zsh-autosuggestions zsh-syntax-highlighting)
+# shellcheck source=/dev/null
 source $ZSH/oh-my-zsh.sh
 
 # === Starship Prompt ===
@@ -17,11 +20,14 @@ export NVM_DIR="$HOME/.nvm"
 # Auto-switch Node version when entering a directory with .nvmrc
 autoload -U add-zsh-hook
 load-nvmrc() {
-  local node_version="$(nvm version)"
-  local nvmrc_path="$(nvm_find_nvmrc)"
+  local node_version
+  node_version="$(nvm version)"
+  local nvmrc_path
+  nvmrc_path="$(nvm_find_nvmrc)"
 
   if [ -n "$nvmrc_path" ]; then
-    local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+    local nvmrc_node_version
+    nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
     if [ "$nvmrc_node_version" = "N/A" ]; then
       nvm install
     elif [ "$nvmrc_node_version" != "$node_version" ]; then
@@ -59,6 +65,7 @@ fi
 # export PATH="$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools"
 
 # === Aliases ===
+# shellcheck source=/dev/null
 [ -f "$HOME/.dotfiles/config/zsh/aliases.zsh" ] && source "$HOME/.dotfiles/config/zsh/aliases.zsh"
 
 # === Zoxide ===
@@ -66,3 +73,11 @@ command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
 
 # === OrbStack ===
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+
+# pnpm
+export PNPM_HOME="/Users/jeroen/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

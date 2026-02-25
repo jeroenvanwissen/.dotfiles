@@ -7,7 +7,8 @@ echo "🚀 Starting macOS setup..."
 backup_if_exists() {
     local file="$1"
     if [ -e "$file" ] && [ ! -L "$file" ]; then
-        local backup="${file}.backup.$(date +%Y%m%d%H%M%S)"
+        local backup
+        backup="${file}.backup.$(date +%Y%m%d%H%M%S)"
         echo "📦 Backing up $file → $backup"
         mv "$file" "$backup"
     fi

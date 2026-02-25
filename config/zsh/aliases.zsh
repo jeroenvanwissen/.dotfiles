@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+# shellcheck shell=bash
 # === Navigation ===
 alias ..="cd .."
 alias ...="cd ../.."
@@ -74,10 +76,11 @@ alias oc="opencode"
 
 # === Yazi (cd on exit) ===
 function yy() {
-  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+  local tmp
+  tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
   yazi "$@" --cwd-file="$tmp"
   if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-    builtin cd -- "$cwd"
+    builtin cd -- "$cwd" || return
   fi
   rm -f -- "$tmp"
 }
