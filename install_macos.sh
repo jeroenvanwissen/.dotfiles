@@ -69,10 +69,17 @@ else
 fi
 
 # Set ZSH as default shell
-ZSH_PATH=$(which zsh)
-if [[ "$SHELL" != "$ZSH_PATH" ]]; then
+if [[ "$(basename "$SHELL")" != "zsh" ]]; then
+    ZSH_PATH=$(which zsh)
+    # Ensure Homebrew zsh is in /etc/shells (required by chsh)
+    if ! grep -qxF "$ZSH_PATH" /etc/shells; then
+        echo "📝 Adding $ZSH_PATH to /etc/shells..."
+        echo "$ZSH_PATH" | sudo tee -a /etc/shells >/dev/null
+    fi
     echo "🐚 Setting ZSH as default shell..."
     chsh -s "$ZSH_PATH"
+else
+    echo "✅ ZSH is already the default shell"
 fi
 
 echo "🔗 Creating ZSH symlinks..."
@@ -125,9 +132,9 @@ npm install -g bash-language-server
 npm install -g yaml-language-server
 
 # Python language servers
-pipx install 'python-lsp-server[all]'
-pipx install ruff
-pipx install jedi-language-server
+pipx install 'python-lsp-server[all]' 2>/dev/null || pipx upgrade 'python-lsp-server[all]'
+pipx install ruff 2>/dev/null || pipx upgrade ruff
+pipx install jedi-language-server 2>/dev/null || pipx upgrade jedi-language-server
 npm install -g pyright
 
 # Marksman, rust-analyzer, taplo are installed via Brewfile
@@ -147,7 +154,7 @@ ln -sf $PWD/config/yazi ~/.config/
 # Install Yazi plugins
 echo "📦 Installing Yazi plugins..."
 if command -v ya &>/dev/null; then
-    ya pkg add yazi-rs/plugins:git
+    ya pkg install
 fi
 
 # OpenCode is installed via Brewfile
