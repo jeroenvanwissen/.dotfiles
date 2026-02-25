@@ -72,6 +72,7 @@ fi
 command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
 
 # === OrbStack ===
+# shellcheck source=/dev/null
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 
 # pnpm
