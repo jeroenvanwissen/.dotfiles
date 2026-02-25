@@ -4,8 +4,9 @@ brew "starship"
 # Editors
 brew "helix"
 
-# Terminal Emulator
+# Terminal Emulators
 cask "kitty"
+cask "ghostty"
 
 # File Manager
 brew "yazi"
