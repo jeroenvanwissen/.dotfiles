@@ -117,6 +117,7 @@ ln -sf $PWD/config/kitty/current-theme.conf ~/.config/kitty/
 # Ghostty is installed via Brewfile
 echo "🔗 Creating Ghostty symlinks..."
 ln -sf $PWD/config/ghostty/config ~/.config/ghostty/
+ln -sf $PWD/config/ghostty/themes ~/.config/ghostty/
 
 # Helix is installed via Brewfile
 
