@@ -1,6 +1,8 @@
 # Font
 font-family = DepartureMono Nerd Font Mono
 font-size = 15
+font-thicken = false
+bold-is-bright = false
 
 # Window
 window-padding-x = 10
