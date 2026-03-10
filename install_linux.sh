@@ -66,7 +66,7 @@ esac
 
 # Create necessary directories
 echo "📁 Creating config directories..."
-mkdir -p ~/.config/{ghostty,helix,yazi,opencode}
+mkdir -p ~/.config/{ghostty,helix,yazi,opencode,bat/themes}
 mkdir -p ~/.local/bin
 
 # ── ZSH + Oh My ZSH ────────────────────────────────────────────────
@@ -211,6 +211,12 @@ fi
 echo "🔗 Creating Helix symlinks..."
 ln -sf "$PWD/config/helix/config.toml" ~/.config/helix/
 ln -sf "$PWD/config/helix/languages.toml" ~/.config/helix/
+
+# ── Bat theme ──────────────────────────────────────────────────────
+echo "🔗 Creating Bat symlinks..."
+ln -sf "$PWD/config/bat/config" ~/.config/bat/
+ln -sf "$PWD/config/bat/themes"/* ~/.config/bat/themes/
+bat cache --build
 
 # ── Ghostty ─────────────────────────────────────────────────────────────────
 echo "📦 Installing Ghostty..."

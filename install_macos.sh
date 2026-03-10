@@ -43,7 +43,7 @@ brew bundle --file=$PWD/Brewfile
 
 # Create necessary directories
 echo "📁 Creating config directories..."
-mkdir -p ~/.config/{kitty,ghostty,helix,yazi,opencode}
+mkdir -p ~/.config/{kitty,ghostty,helix,yazi,opencode,bat/themes}
 mkdir -p ~/.local/bin
 
 # Install and configure ZSH + Oh My ZSH
@@ -114,6 +114,12 @@ fi
 echo "🔗 Creating Kitty symlinks..."
 ln -sf $PWD/config/kitty/kitty.conf ~/.config/kitty/
 ln -sf $PWD/config/kitty/current-theme.conf ~/.config/kitty/
+
+# Bat is installed via Brewfile
+echo "🔗 Creating Bat symlinks..."
+ln -sf $PWD/config/bat/config ~/.config/bat/
+ln -sf $PWD/config/bat/themes/* ~/.config/bat/themes/
+bat cache --build
 
 # Ghostty is installed via Brewfile
 echo "🔗 Creating Ghostty symlinks..."
