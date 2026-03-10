@@ -74,6 +74,7 @@ command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
 # === OrbStack ===
 # shellcheck source=/dev/null
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 
 # pnpm
 export PNPM_HOME="/Users/jeroen/Library/pnpm"
