@@ -18,6 +18,7 @@
 	navigate = true
 	side-by-side = true
 	line-numbers = true
+	decorations = true
 	syntax-theme = Catppuccin Mocha
 
 [merge]
