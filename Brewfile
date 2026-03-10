@@ -17,6 +17,7 @@ brew "python"
 brew "pipx"
 brew "lazygit"
 brew "jq"
+brew "pnpm"
 
 # AI Coding Agent
 brew "anomalyco/tap/opencode"
