@@ -169,6 +169,7 @@ fi
 echo "🔗 Creating OpenCode config symlinks..."
 mkdir -p ~/.config/opencode
 ln -sf $PWD/config/opencode/opencode.json ~/.config/opencode/
+ln -sf $PWD/config/opencode/tui.json ~/.config/opencode/
 
 # Git config
 echo "🔗 Creating Git config symlinks..."
