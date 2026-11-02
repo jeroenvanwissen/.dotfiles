@@ -83,3 +83,18 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/jeroen/.lmstudio/bin"
+# End of LM Studio CLI section
+
+# === OpenTofu ===
+# State passphrase for infrastructure-prod/-local, from the macOS Keychain
+tofu() {
+  local item=opentofu-state-infrastructure-prod
+  case "$PWD" in */Infrastructure/local*) item=opentofu-state-infrastructure-local ;; esac
+  TF_VAR_state_passphrase="$(security find-generic-password -a "$USER" -s "$item" -w)" command tofu "$@"
+}
+
+# === LLVM / lld / GNU make (Homebrew) ===
+export PATH="$(brew --prefix llvm)/bin:$(brew --prefix lld)/bin:$(brew --prefix make)/libexec/gnubin:$PATH"

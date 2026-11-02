@@ -53,3 +53,5 @@ dist/
 *.log
 .cache/
 .turbo/
+
+**/.claude/settings.local.json
