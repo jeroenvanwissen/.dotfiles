@@ -1,11 +1,7 @@
 # Terminal & Shell
 brew "starship"
 
-# Editors
-brew "helix"
-
-# Terminal Emulators
-cask "kitty"
+# Terminal Emulator
 cask "ghostty"
 
 # File Manager
@@ -21,11 +17,6 @@ brew "pnpm"
 
 # AI Coding Agent
 brew "anomalyco/tap/opencode"
-
-# Language Servers
-brew "marksman"
-brew "taplo"
-brew "rust-analyzer"
 
 # Modern CLI replacements
 brew "eza"

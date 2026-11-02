@@ -66,7 +66,7 @@ esac
 
 # Create necessary directories
 echo "📁 Creating config directories..."
-mkdir -p ~/.config/{ghostty,helix,yazi,opencode,bat/themes}
+mkdir -p ~/.config/{ghostty,yazi,opencode,bat/themes}
 mkdir -p ~/.local/bin
 
 # ── ZSH + Oh My ZSH ────────────────────────────────────────────────
@@ -153,64 +153,6 @@ if ! command -v gh &>/dev/null; then
 else
     echo "✅ GH CLI already installed"
 fi
-
-# ── Helix ───────────────────────────────────────────────────────────
-echo "📦 Installing Helix..."
-if ! command -v hx &>/dev/null; then
-    echo "📥 Installing Helix..."
-    case "$PKG_MANAGER" in
-        apt)
-            sudo add-apt-repository -y ppa:maveonair/helix-editor
-            sudo apt update && sudo apt install -y helix
-            ;;
-        dnf)
-            sudo dnf copr enable -y varlad/helix
-            sudo dnf install -y helix
-            ;;
-        pacman)
-            pkg_install helix
-            ;;
-    esac
-else
-    echo "✅ Helix already installed"
-fi
-
-# ── Language Servers ────────────────────────────────────────────────
-echo "📥 Installing Language Servers..."
-npm install -g typescript-language-server typescript
-npm install -g vscode-langservers-extracted
-npm install -g bash-language-server
-npm install -g yaml-language-server
-npm install -g pyright
-
-# TOML language server (taplo)
-if ! command -v taplo &>/dev/null; then
-    echo "📥 Installing taplo..."
-    cargo install --locked taplo-cli 2>/dev/null || echo "⚠️  Install taplo manually (requires cargo)"
-fi
-
-# Python language servers
-pipx install 'python-lsp-server[all]' 2>/dev/null || pipx upgrade 'python-lsp-server[all]'
-pipx install ruff 2>/dev/null || pipx upgrade ruff
-pipx install jedi-language-server 2>/dev/null || pipx upgrade jedi-language-server
-
-# Markdown language server
-ARCH=$(uname -m)
-case "$ARCH" in
-    x86_64)  MARKSMAN_ARCH="marksman-linux-x64" ;;
-    aarch64) MARKSMAN_ARCH="marksman-linux-arm64" ;;
-    *)       MARKSMAN_ARCH="" ;;
-esac
-if [ -n "$MARKSMAN_ARCH" ]; then
-    curl -Lo ~/.local/bin/marksman "https://github.com/artempyanykh/marksman/releases/latest/download/$MARKSMAN_ARCH"
-    chmod +x ~/.local/bin/marksman
-else
-    echo "⚠️  Unsupported architecture for marksman: $ARCH"
-fi
-
-echo "🔗 Creating Helix symlinks..."
-ln -sf "$PWD/config/helix/config.toml" ~/.config/helix/
-ln -sf "$PWD/config/helix/languages.toml" ~/.config/helix/
 
 # ── Bat theme ──────────────────────────────────────────────────────
 echo "🔗 Creating Bat symlinks..."

@@ -5,29 +5,16 @@ My personal dotfiles for macOS and Linux development environments.
 ## What's Inside
 
 - **ZSH**: Shell configuration with Oh My ZSH and Starship prompt
-- **Kitty**: GPU-based terminal emulator (macOS)
-- **Helix**: Modern text editor with LSP support
+- **Ghostty**: Terminal emulator (Catppuccin Mocha theme)
 - **Starship**: Cross-shell prompt configuration
 - **Yazi**: Terminal file manager
 - **NVM**: Node.js version management with auto-switching
-- **lazygit**: Terminal UI for git (integrated with Helix via Ctrl-G)
+- **lazygit**: Terminal UI for git
 - **git-delta**: Syntax-highlighted, side-by-side diffs
+- **bat**: Syntax-highlighted `cat` (Catppuccin Mocha theme)
 - **OpenCode**: Open source AI coding agent (Catppuccin theme)
 
-## Language Support (Helix LSPs)
-
-| Language   | LSP / Tooling                                       |
-| ---------- | --------------------------------------------------- |
-| TypeScript | typescript-language-server, eslint, tailwindcss, prettier |
-| Rust       | rust-analyzer, clippy                               |
-| Swift      | sourcekit-lsp, swiftformat                          |
-| Python     | pylsp, ruff, jedi, pyright                          |
-| Astro      | astro-ls                                            |
-| HTML/CSS   | vscode-langservers-extracted                        |
-| TOML       | taplo                                               |
-| YAML       | yaml-language-server                                |
-| Bash       | bash-language-server                                |
-| Markdown   | marksman                                            |
+Git uses VS Code (`code --wait`) as its editor.
 
 ## CLI Tools
 
@@ -71,11 +58,20 @@ Keep all tools up to date with a single command:
 update-tools
 ```
 
+## Cleaning Up Old Tools
+
+Machines set up from older versions of these dotfiles may still have Kitty,
+Helix, tmux, Fish, fnm or Midnight Commander installed. Remove them and their
+leftover configs with:
+
+```bash
+./cleanup_old_tools.sh
+```
+
 ## Custom Scripts
 
 Scripts in `bin/` are symlinked to `~/.local/bin/`:
 
-- `split-kitten` — Create vertical split in Kitty
 - `update-tools` — Update all installed tools
 
 ## Shell Aliases

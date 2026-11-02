@@ -102,20 +102,45 @@ else
     echo "✅ fnm not installed, skipping"
 fi
 
-# ── Ghostty (if leftover from older branch) ─────────────────────────
-if command -v ghostty &>/dev/null; then
-    echo "👻 Removing Ghostty..."
+# ── Kitty (replaced by Ghostty) ─────────────────────────────────────
+if command -v kitty &>/dev/null; then
+    echo "🐱 Removing Kitty..."
 
-    rm -rf "$HOME/.config/ghostty"
+    rm -rf "$HOME/.config/kitty"
 
-    if command -v brew &>/dev/null && brew list ghostty &>/dev/null; then
-        echo "  ↳ Uninstalling Ghostty via Homebrew..."
-        brew uninstall ghostty
+    if command -v brew &>/dev/null && brew list --cask kitty &>/dev/null; then
+        echo "  ↳ Uninstalling Kitty via Homebrew..."
+        brew uninstall --cask kitty
     fi
 
-    echo "  ✅ Ghostty removed"
+    echo "  ✅ Kitty removed"
 else
-    echo "✅ Ghostty not installed, skipping"
+    echo "✅ Kitty not installed, skipping"
+fi
+
+# ── Helix ───────────────────────────────────────────────────────────
+if command -v hx &>/dev/null || command -v helix &>/dev/null; then
+    echo "🧬 Removing Helix..."
+
+    rm -rf "$HOME/.config/helix"
+
+    if command -v brew &>/dev/null && brew list helix &>/dev/null; then
+        echo "  ↳ Uninstalling Helix via Homebrew..."
+        brew uninstall helix
+    elif command -v apt &>/dev/null; then
+        echo "  ↳ Uninstalling Helix via apt..."
+        sudo apt remove -y helix
+    elif command -v dnf &>/dev/null; then
+        echo "  ↳ Uninstalling Helix via dnf..."
+        sudo dnf remove -y helix
+    elif command -v pacman &>/dev/null; then
+        echo "  ↳ Uninstalling Helix via pacman..."
+        sudo pacman -Rns --noconfirm helix
+    fi
+
+    echo "  ✅ Helix removed"
+else
+    echo "✅ Helix not installed, skipping"
 fi
 
 # ── Midnight Commander (if leftover from older branch) ──────────────
@@ -141,14 +166,15 @@ else
     echo "✅ Midnight Commander not installed, skipping"
 fi
 
-# ── Cleanup leftover config directories ─────────────────────────────
+# ── Cleanup leftover config directories and scripts ─────────────────
 echo "🗂  Cleaning leftover config directories..."
-for dir in fish tmux ghostty mc; do
+for dir in fish tmux mc kitty helix; do
     if [ -d "$HOME/.config/$dir" ]; then
         echo "  ↳ Removing ~/.config/$dir"
         rm -rf "$HOME/.config/$dir"
     fi
 done
+rm -f "$HOME/.local/bin/split-kitten"
 
 echo ""
 echo "✨ Cleanup complete! Restart your terminal for changes to take effect."

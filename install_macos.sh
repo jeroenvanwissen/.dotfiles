@@ -43,7 +43,7 @@ brew bundle --file=$PWD/Brewfile
 
 # Create necessary directories
 echo "📁 Creating config directories..."
-mkdir -p ~/.config/{kitty,ghostty,helix,yazi,opencode,bat/themes}
+mkdir -p ~/.config/{ghostty,yazi,opencode,bat/themes}
 mkdir -p ~/.local/bin
 
 # Install and configure ZSH + Oh My ZSH
@@ -110,11 +110,6 @@ fi
 
 # GH CLI is installed via Brewfile
 
-# Kitty is installed via Brewfile
-echo "🔗 Creating Kitty symlinks..."
-ln -sf $PWD/config/kitty/kitty.conf ~/.config/kitty/
-ln -sf $PWD/config/kitty/current-theme.conf ~/.config/kitty/
-
 # Bat is installed via Brewfile
 echo "🔗 Creating Bat symlinks..."
 ln -sf $PWD/config/bat/config ~/.config/bat/
@@ -125,31 +120,6 @@ bat cache --build
 echo "🔗 Creating Ghostty symlinks..."
 ln -sf $PWD/config/ghostty/config ~/.config/ghostty/
 ln -sf $PWD/config/ghostty/themes ~/.config/ghostty/
-
-# Helix is installed via Brewfile
-
-echo "📥 Installing Language Servers..."
-# JavaScript/TypeScript language servers
-npm install -g typescript-language-server typescript
-npm install -g vscode-langservers-extracted
-
-# Bash language server
-npm install -g bash-language-server
-
-# YAML language server
-npm install -g yaml-language-server
-
-# Python language servers
-pipx install 'python-lsp-server[all]' 2>/dev/null || pipx upgrade 'python-lsp-server[all]'
-pipx install ruff 2>/dev/null || pipx upgrade ruff
-pipx install jedi-language-server 2>/dev/null || pipx upgrade jedi-language-server
-npm install -g pyright
-
-# Marksman, rust-analyzer, taplo are installed via Brewfile
-
-echo "🔗 Creating Helix symlinks..."
-ln -sf $PWD/config/helix/config.toml ~/.config/helix/
-ln -sf $PWD/config/helix/languages.toml ~/.config/helix/
 
 # Starship is installed via Brewfile
 echo "🔗 Creating Starship symlinks..."
@@ -179,7 +149,6 @@ ln -sf $PWD/config/git/.gitignore_global ~/
 
 # Set up custom scripts
 echo "🔗 Creating script symlinks..."
-ln -sf $PWD/bin/split-kitten ~/.local/bin/
 ln -sf $PWD/bin/update-tools ~/.local/bin/
 
 echo "✨ Installation complete! Please restart your terminal."
