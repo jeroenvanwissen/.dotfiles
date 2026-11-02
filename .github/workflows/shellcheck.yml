@@ -5,10 +5,14 @@ on:
     paths:
       - '**.sh'
       - 'bin/**'
+      - 'config/zsh/**'
+      - '.github/workflows/shellcheck.yml'
   pull_request:
     paths:
       - '**.sh'
       - 'bin/**'
+      - 'config/zsh/**'
+      - '.github/workflows/shellcheck.yml'
 
 jobs:
   shellcheck:
