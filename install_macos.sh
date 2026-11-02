@@ -103,6 +103,15 @@ export NVM_DIR="$HOME/.nvm"
 echo "📥 Installing Node.js LTS..."
 nvm install --lts
 
+# Install Rust via rustup (.zshrc sources ~/.cargo/env, so don't modify PATH)
+echo "📦 Installing Rust..."
+if [ ! -x "$HOME/.cargo/bin/rustup" ]; then
+    echo "📥 Installing rustup..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+else
+    echo "✅ rustup already installed"
+fi
+
 # Python and pipx are installed via Brewfile
 if ! command -v pipx &> /dev/null; then
     pipx ensurepath

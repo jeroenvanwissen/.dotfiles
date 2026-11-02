@@ -125,6 +125,18 @@ export NVM_DIR="$HOME/.nvm"
 echo "📥 Installing Node.js LTS..."
 nvm install --lts
 
+# ── Rust (rustup) ───────────────────────────────────────────────────
+# .zshrc sources ~/.cargo/env, so don't let rustup modify PATH
+echo "📦 Installing Rust..."
+if [ ! -x "$HOME/.cargo/bin/rustup" ]; then
+    echo "📥 Installing rustup..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+else
+    echo "✅ rustup already installed"
+fi
+# shellcheck source=/dev/null
+. "$HOME/.cargo/env"
+
 # Ensure pipx is on PATH
 echo "📥 Configuring pipx..."
 pipx ensurepath

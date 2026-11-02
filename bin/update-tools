@@ -33,6 +33,13 @@ if [ -d "$HOME/.nvm" ]; then
     nvm alias default lts/*
 fi
 
+# Rust toolchain
+if command -v rustup &> /dev/null; then
+    echo ""
+    echo "🦀 Updating Rust toolchain..."
+    rustup update
+fi
+
 # npm global packages
 if command -v npm &> /dev/null; then
     echo ""

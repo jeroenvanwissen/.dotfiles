@@ -9,6 +9,7 @@ My personal dotfiles for macOS and Linux development environments.
 - **Starship**: Cross-shell prompt configuration
 - **Yazi**: Terminal file manager
 - **NVM**: Node.js version management with auto-switching
+- **rustup**: Rust toolchain management
 - **lazygit**: Terminal UI for git
 - **git-delta**: Syntax-highlighted, side-by-side diffs
 - **bat**: Syntax-highlighted `cat` (Catppuccin Mocha theme)
