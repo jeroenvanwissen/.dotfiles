@@ -97,4 +97,4 @@ tofu() {
 }
 
 # === LLVM / lld / GNU make (Homebrew) ===
-export PATH="$(brew --prefix llvm)/bin:$(brew --prefix lld)/bin:$(brew --prefix make)/libexec/gnubin:$PATH"
+export PATH="/opt/homebrew/opt/llvm/bin:/opt/homebrew/opt/lld/bin:/opt/homebrew/opt/make/libexec/gnubin:$PATH"
