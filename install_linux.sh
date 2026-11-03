@@ -34,6 +34,13 @@ fi
 
 echo "📦 Detected package manager: $PKG_MANAGER"
 
+IS_WSL=false
+grep -qi microsoft /proc/version 2>/dev/null && IS_WSL=true
+
+# Tools below install into ~/.local/bin, so the rest of this script needs it on PATH
+mkdir -p ~/.local/bin
+export PATH="$HOME/.local/bin:$PATH"
+
 # ── Update system packages ──────────────────────────────────────────
 echo "📦 Updating system packages..."
 pkg_update
@@ -43,7 +50,7 @@ echo "📦 Installing base dependencies..."
 case "$PKG_MANAGER" in
     apt)
         pkg_install \
-            curl wget git build-essential pkg-config \
+            curl wget git gnupg build-essential pkg-config \
             python3 python3-venv pipx \
             fzf bat fd-find ripgrep unzip
         # Symlink bat / fd if installed under alternate names
@@ -67,7 +74,6 @@ esac
 # Create necessary directories
 echo "📁 Creating config directories..."
 mkdir -p ~/.config/{ghostty,yazi,opencode,bat/themes}
-mkdir -p ~/.local/bin
 
 # ── ZSH + Oh My ZSH ────────────────────────────────────────────────
 echo "📦 Installing ZSH..."
@@ -137,10 +143,6 @@ fi
 # shellcheck source=/dev/null
 . "$HOME/.cargo/env"
 
-# Ensure pipx is on PATH
-echo "📥 Configuring pipx..."
-pipx ensurepath
-
 # ── GH CLI ──────────────────────────────────────────────────────────
 echo "📦 Installing GH CLI..."
 if ! command -v gh &>/dev/null; then
@@ -173,16 +175,21 @@ ln -sf "$PWD/config/bat/themes"/* ~/.config/bat/themes/
 bat cache --build
 
 # ── Ghostty ─────────────────────────────────────────────────────────────────
-echo "📦 Installing Ghostty..."
-if ! command -v ghostty &>/dev/null; then
-    echo "📝 Ghostty must be installed manually on Linux."
-    echo "   See: https://ghostty.org/docs/install/binary"
+if [ "$IS_WSL" = true ]; then
+    echo "📝 WSL detected: skipping Ghostty. Use a terminal on the Windows side"
+    echo "   and install DepartureMono Nerd Font there."
 else
-    echo "✅ Ghostty already installed"
+    echo "📦 Installing Ghostty..."
+    if ! command -v ghostty &>/dev/null; then
+        echo "📝 Ghostty must be installed manually on Linux."
+        echo "   See: https://ghostty.org/docs/install/binary"
+    else
+        echo "✅ Ghostty already installed"
+    fi
+    echo "🔗 Creating Ghostty symlinks..."
+    ln -sf "$PWD/config/ghostty/config" ~/.config/ghostty/
+    ln -sf "$PWD/config/ghostty/themes" ~/.config/ghostty/
 fi
-echo "🔗 Creating Ghostty symlinks..."
-ln -sf "$PWD/config/ghostty/config" ~/.config/ghostty/
-ln -sf "$PWD/config/ghostty/themes" ~/.config/ghostty/
 
 # ── Starship ────────────────────────────────────────────────────────
 echo "📦 Installing Starship..."
@@ -282,7 +289,8 @@ fi
 echo "📦 Installing OpenCode..."
 if ! command -v opencode &>/dev/null; then
     echo "📥 Installing OpenCode..."
-    curl -fsSL https://opencode.ai/install | bash
+    # ~/.zshrc is a symlink into this repo; it already adds ~/.opencode/bin to PATH
+    curl -fsSL https://opencode.ai/install | bash -s -- --no-modify-path
 else
     echo "✅ OpenCode already installed"
 fi

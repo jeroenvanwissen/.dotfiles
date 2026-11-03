@@ -39,7 +39,8 @@ fi
 
 # Install Homebrew packages from Brewfile
 echo "📦 Installing Homebrew packages..."
-brew bundle --file=$PWD/Brewfile
+# Don't abort on one failed entry (e.g. an app already installed outside Homebrew)
+brew bundle --file="$PWD/Brewfile" || echo "⚠️  Some Brewfile entries failed (see above), continuing..."
 
 # Create necessary directories
 echo "📁 Creating config directories..."
@@ -112,12 +113,7 @@ else
     echo "✅ rustup already installed"
 fi
 
-# Python and pipx are installed via Brewfile
-if ! command -v pipx &> /dev/null; then
-    pipx ensurepath
-fi
-
-# GH CLI is installed via Brewfile
+# Python, pipx and GH CLI are installed via Brewfile
 
 # Bat is installed via Brewfile
 echo "🔗 Creating Bat symlinks..."

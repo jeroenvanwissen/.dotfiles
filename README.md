@@ -86,4 +86,4 @@ The shell config includes aliases for common workflows:
 - **Swift**: `sb` (build), `sr` (run), `st` (test)
 - **Docker**: `dc`, `dcu`, `dcd`, `dcl`
 - **OpenCode**: `oc` (opencode)
-- **Utilities**: `lg` (lazygit), `ports`, `ip`
+- **Utilities**: `lg` (lazygit), `ports`, `myip`

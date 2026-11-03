@@ -74,27 +74,34 @@ command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
 # === OrbStack ===
 # shellcheck source=/dev/null
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
-export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 
-# pnpm
-export PNPM_HOME="/Users/jeroen/Library/pnpm"
+# === pnpm ===
+if [[ "$OSTYPE" == darwin* ]]; then
+  export PNPM_HOME="$HOME/Library/pnpm"
+else
+  export PNPM_HOME="$HOME/.local/share/pnpm"
+fi
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
-# pnpm end
+
+# === OpenCode (the Linux installer puts it in ~/.opencode/bin) ===
+[ -d "$HOME/.opencode/bin" ] && export PATH="$HOME/.opencode/bin:$PATH"
 
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/Users/jeroen/.lmstudio/bin"
 # End of LM Studio CLI section
 
-# === OpenTofu ===
-# State passphrase for infrastructure-prod/-local, from the macOS Keychain
-tofu() {
-  local item=opentofu-state-infrastructure-prod
-  case "$PWD" in */Infrastructure/local*) item=opentofu-state-infrastructure-local ;; esac
-  TF_VAR_state_passphrase="$(security find-generic-password -a "$USER" -s "$item" -w)" command tofu "$@"
-}
+# === macOS only ===
+if [[ "$OSTYPE" == darwin* ]]; then
+  # Homebrew Ruby, LLVM / lld and GNU make
+  export PATH="/opt/homebrew/opt/ruby/bin:/opt/homebrew/opt/llvm/bin:/opt/homebrew/opt/lld/bin:/opt/homebrew/opt/make/libexec/gnubin:$PATH"
 
-# === LLVM / lld / GNU make (Homebrew) ===
-export PATH="/opt/homebrew/opt/llvm/bin:/opt/homebrew/opt/lld/bin:/opt/homebrew/opt/make/libexec/gnubin:$PATH"
+  # OpenTofu state passphrase for infrastructure-prod/-local, from the macOS Keychain
+  tofu() {
+    local item=opentofu-state-infrastructure-prod
+    case "$PWD" in */Infrastructure/local*) item=opentofu-state-infrastructure-local ;; esac
+    TF_VAR_state_passphrase="$(security find-generic-password -a "$USER" -s "$item" -w)" command tofu "$@"
+  }
+fi
