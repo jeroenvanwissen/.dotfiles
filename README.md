@@ -14,6 +14,7 @@ My personal dotfiles for macOS and Linux development environments.
 - **git-delta**: Syntax-highlighted, side-by-side diffs
 - **bat**: Syntax-highlighted `cat` (Catppuccin Mocha theme)
 - **OpenCode**: Open source AI coding agent (Catppuccin theme)
+- **Claude Code**: Settings, plugins and own skills (see below)
 
 Git uses VS Code (`code --wait`) as its editor.
 
@@ -57,6 +58,26 @@ Keep all tools up to date with a single command:
 
 ```bash
 update-tools
+```
+
+## Claude Code
+
+The installers install Claude Code and link its config from `config/claude/`:
+
+- `settings.json` → `~/.claude/settings.json`. Plugins and their marketplaces
+  are declared here (`enabledPlugins`, `extraKnownMarketplaces`) and installed
+  by the installer, so a new machine gets the same plugins.
+- `skills/<name>/` → `~/.claude/skills/<name>/`. opencode reads these too.
+
+Only the files above are versioned. Credentials, `~/.claude.json`, history,
+project transcripts and plugin caches stay local. A skill created directly in
+`~/.claude/skills/` is not versioned until it is moved into
+`config/claude/skills/` and linked back.
+
+Check the skill pack with:
+
+```bash
+python3 config/claude/scripts/validate_pack.py
 ```
 
 ## Cleaning Up Old Tools

@@ -52,7 +52,7 @@ case "$PKG_MANAGER" in
         pkg_install \
             curl wget git gnupg build-essential pkg-config \
             python3 python3-venv pipx \
-            fzf bat fd-find ripgrep unzip
+            fzf bat fd-find ripgrep unzip jq
         # Symlink bat / fd if installed under alternate names
         [ ! -e ~/.local/bin/bat ] && [ -x /usr/bin/batcat ] && ln -sf /usr/bin/batcat ~/.local/bin/bat
         [ ! -e ~/.local/bin/fd ] && [ -x /usr/bin/fdfind ] && ln -sf /usr/bin/fdfind ~/.local/bin/fd
@@ -61,13 +61,13 @@ case "$PKG_MANAGER" in
         pkg_install \
             curl wget git gcc gcc-c++ make pkg-config \
             python3 python3-pip pipx \
-            fzf bat fd-find ripgrep unzip
+            fzf bat fd-find ripgrep unzip jq
         ;;
     pacman)
         pkg_install \
             curl wget git base-devel pkg-config \
             python python-pipx \
-            fzf bat fd ripgrep unzip
+            fzf bat fd ripgrep unzip jq
         ;;
 esac
 
@@ -325,6 +325,41 @@ echo "🔗 Creating Git config symlinks..."
 backup_if_exists ~/.gitconfig
 ln -sf "$PWD/config/git/.gitconfig" ~/
 ln -sf "$PWD/config/git/.gitignore_global" ~/
+
+# ── Claude Code ─────────────────────────────────────────────────────
+echo "📦 Installing Claude Code..."
+if ! command -v claude &>/dev/null; then
+    echo "📥 Installing Claude Code..."
+    curl -fsSL https://claude.ai/install.sh | bash
+else
+    echo "✅ Claude Code already installed"
+fi
+
+# settings.json and our own skills; credentials, history and plugin data stay in ~/.claude
+echo "🔗 Creating Claude Code symlinks..."
+mkdir -p ~/.claude/skills
+backup_if_exists ~/.claude/settings.json
+ln -sf "$PWD/config/claude/settings.json" ~/.claude/
+for skill in "$PWD"/config/claude/skills/*/; do
+    target="$HOME/.claude/skills/$(basename "$skill")"
+    if [ -e "$target" ] && [ ! -L "$target" ]; then
+        echo "⚠️  Skipping $target: it exists and is not a symlink"
+        continue
+    fi
+    ln -sfn "${skill%/}" "$target"
+done
+
+# Plugins and their marketplaces are declared in settings.json
+# (claude reads stdin, so it gets /dev/null inside the read loops)
+echo "📦 Installing Claude Code plugins..."
+jq -r '.extraKnownMarketplaces[] | select(.source.source == "github") | .source.repo' "$PWD/config/claude/settings.json" |
+    while read -r repo; do
+        claude plugin marketplace add "$repo" </dev/null || echo "⚠️  Could not add marketplace $repo"
+    done
+jq -r '.enabledPlugins | to_entries[] | select(.value) | .key' "$PWD/config/claude/settings.json" |
+    while read -r plugin; do
+        claude plugin install "$plugin" </dev/null || echo "⚠️  Could not install plugin $plugin"
+    done
 
 # ── Custom scripts ──────────────────────────────────────────────────
 echo "🔗 Creating script symlinks..."

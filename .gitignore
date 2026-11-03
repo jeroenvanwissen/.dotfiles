@@ -14,3 +14,7 @@ Icon?
 # Environment
 .env
 .env.local
+
+# Claude Code: credentials and machine-local settings never belong here
+.credentials.json
+settings.local.json

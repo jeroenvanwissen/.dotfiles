@@ -47,6 +47,8 @@ echo "📁 Creating config directories..."
 # (no yazi dir: the whole config/yazi directory is symlinked as ~/.config/yazi)
 mkdir -p ~/.config/{ghostty,opencode,bat/themes}
 mkdir -p ~/.local/bin
+# Claude Code installs into ~/.local/bin and is used later in this script
+export PATH="$HOME/.local/bin:$PATH"
 
 # Install and configure ZSH + Oh My ZSH
 echo "📦 Installing Oh My ZSH..."
@@ -152,6 +154,41 @@ echo "🔗 Creating Git config symlinks..."
 backup_if_exists ~/.gitconfig
 ln -sf $PWD/config/git/.gitconfig ~/
 ln -sf $PWD/config/git/.gitignore_global ~/
+
+# Claude Code (native installer; it keeps itself up to date)
+echo "📦 Installing Claude Code..."
+if ! command -v claude &>/dev/null; then
+    echo "📥 Installing Claude Code..."
+    curl -fsSL https://claude.ai/install.sh | bash
+else
+    echo "✅ Claude Code already installed"
+fi
+
+# settings.json and our own skills; credentials, history and plugin data stay in ~/.claude
+echo "🔗 Creating Claude Code symlinks..."
+mkdir -p ~/.claude/skills
+backup_if_exists ~/.claude/settings.json
+ln -sf "$PWD/config/claude/settings.json" ~/.claude/
+for skill in "$PWD"/config/claude/skills/*/; do
+    target="$HOME/.claude/skills/$(basename "$skill")"
+    if [ -e "$target" ] && [ ! -L "$target" ]; then
+        echo "⚠️  Skipping $target: it exists and is not a symlink"
+        continue
+    fi
+    ln -sfn "${skill%/}" "$target"
+done
+
+# Plugins and their marketplaces are declared in settings.json
+# (claude reads stdin, so it gets /dev/null inside the read loops)
+echo "📦 Installing Claude Code plugins..."
+jq -r '.extraKnownMarketplaces[] | select(.source.source == "github") | .source.repo' "$PWD/config/claude/settings.json" |
+    while read -r repo; do
+        claude plugin marketplace add "$repo" </dev/null || echo "⚠️  Could not add marketplace $repo"
+    done
+jq -r '.enabledPlugins | to_entries[] | select(.value) | .key' "$PWD/config/claude/settings.json" |
+    while read -r plugin; do
+        claude plugin install "$plugin" </dev/null || echo "⚠️  Could not install plugin $plugin"
+    done
 
 # Set up custom scripts
 echo "🔗 Creating script symlinks..."

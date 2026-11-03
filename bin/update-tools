@@ -46,6 +46,18 @@ if [ -d "$HOME/.nvm" ]; then
     nvm alias default lts/*
 fi
 
+# Claude Code and its plugins
+if command -v claude &> /dev/null; then
+    echo ""
+    echo "🤖 Updating Claude Code and plugins..."
+    claude update
+    claude plugin marketplace update
+    jq -r '.enabledPlugins // {} | to_entries[] | select(.value) | .key' "$HOME/.claude/settings.json" |
+        while read -r plugin; do
+            claude plugin update "$plugin" </dev/null || echo "⚠️  Could not update plugin $plugin"
+        done
+fi
+
 # Rust toolchain
 if command -v rustup &> /dev/null; then
     echo ""
