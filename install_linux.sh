@@ -73,7 +73,8 @@ esac
 
 # Create necessary directories
 echo "📁 Creating config directories..."
-mkdir -p ~/.config/{ghostty,yazi,opencode,bat/themes}
+# (no yazi dir: the whole config/yazi directory is symlinked as ~/.config/yazi)
+mkdir -p ~/.config/{ghostty,opencode,bat/themes}
 
 # ── ZSH + Oh My ZSH ────────────────────────────────────────────────
 echo "📦 Installing ZSH..."
@@ -140,8 +141,6 @@ if [ ! -x "$HOME/.cargo/bin/rustup" ]; then
 else
     echo "✅ rustup already installed"
 fi
-# shellcheck source=/dev/null
-. "$HOME/.cargo/env"
 
 # ── GH CLI ──────────────────────────────────────────────────────────
 echo "📦 Installing GH CLI..."
@@ -238,7 +237,18 @@ fi
 echo "📦 Installing Yazi..."
 if ! command -v yazi &>/dev/null; then
     echo "📥 Installing Yazi..."
-    cargo install --locked yazi-fm yazi-cli 2>/dev/null || echo "⚠️  Install yazi manually (requires cargo or download from GitHub releases)"
+    case "$PKG_MANAGER" in
+        pacman)
+            pkg_install yazi
+            ;;
+        *)
+            YAZI_DIR="yazi-$(uname -m)-unknown-linux-gnu"
+            curl -fsSLo /tmp/yazi.zip "https://github.com/sxyazi/yazi/releases/latest/download/${YAZI_DIR}.zip"
+            unzip -qo /tmp/yazi.zip -d /tmp
+            install -m 755 "/tmp/${YAZI_DIR}/yazi" "/tmp/${YAZI_DIR}/ya" ~/.local/bin/
+            rm -rf /tmp/yazi.zip "/tmp/${YAZI_DIR}"
+            ;;
+    esac
 else
     echo "✅ Yazi already installed"
 fi
@@ -255,7 +265,18 @@ fi
 echo "📦 Installing git-delta..."
 if ! command -v delta &>/dev/null; then
     echo "📥 Installing git-delta..."
-    cargo install --locked git-delta 2>/dev/null || echo "⚠️  Install git-delta manually (requires cargo or download from GitHub releases)"
+    case "$PKG_MANAGER" in
+        pacman)
+            pkg_install git-delta
+            ;;
+        *)
+            DELTA_VERSION=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+            DELTA_DIR="delta-${DELTA_VERSION}-$(uname -m)-unknown-linux-gnu"
+            curl -fsSL "https://github.com/dandavison/delta/releases/download/${DELTA_VERSION}/${DELTA_DIR}.tar.gz" | tar xz -C /tmp
+            install -m 755 "/tmp/${DELTA_DIR}/delta" ~/.local/bin/
+            rm -rf "/tmp/${DELTA_DIR}"
+            ;;
+    esac
 else
     echo "✅ git-delta already installed"
 fi

@@ -44,7 +44,8 @@ brew bundle --file="$PWD/Brewfile" || echo "⚠️  Some Brewfile entries failed
 
 # Create necessary directories
 echo "📁 Creating config directories..."
-mkdir -p ~/.config/{ghostty,yazi,opencode,bat/themes}
+# (no yazi dir: the whole config/yazi directory is symlinked as ~/.config/yazi)
+mkdir -p ~/.config/{ghostty,opencode,bat/themes}
 mkdir -p ~/.local/bin
 
 # Install and configure ZSH + Oh My ZSH
