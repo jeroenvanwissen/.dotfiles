@@ -18,6 +18,7 @@ if command -v fish &>/dev/null; then
         echo "  ↳ Removing Fish config..."
     fi
     rm -rf "$HOME/.config/fish"
+    command -v pipx &>/dev/null && pipx uninstall virtualfish &>/dev/null || true
 
     # Uninstall via Homebrew (macOS) or package manager (Linux)
     if command -v brew &>/dev/null && brew list fish &>/dev/null; then
@@ -130,9 +131,11 @@ if command -v hx &>/dev/null || command -v helix &>/dev/null; then
     elif command -v apt &>/dev/null; then
         echo "  ↳ Uninstalling Helix via apt..."
         sudo apt remove -y helix
+        sudo add-apt-repository -y --remove ppa:maveonair/helix-editor 2>/dev/null || true
     elif command -v dnf &>/dev/null; then
         echo "  ↳ Uninstalling Helix via dnf..."
         sudo dnf remove -y helix
+        sudo dnf copr remove -y varlad/helix 2>/dev/null || true
     elif command -v pacman &>/dev/null; then
         echo "  ↳ Uninstalling Helix via pacman..."
         sudo pacman -Rns --noconfirm helix
@@ -142,6 +145,35 @@ if command -v hx &>/dev/null || command -v helix &>/dev/null; then
 else
     echo "✅ Helix not installed, skipping"
 fi
+
+# ── Helix language servers ──────────────────────────────────────────
+echo "🧩 Removing Helix language servers..."
+if command -v brew &>/dev/null; then
+    for formula in python-lsp-server ruff marksman taplo rust-analyzer; do
+        if brew list "$formula" &>/dev/null; then
+            echo "  ↳ Uninstalling $formula via Homebrew..."
+            brew uninstall "$formula"
+        fi
+    done
+fi
+if command -v pipx &>/dev/null; then
+    for pkg in jedi-language-server python-lsp-server ruff ruff-lsp; do
+        pipx uninstall "$pkg" &>/dev/null && echo "  ↳ Uninstalled $pkg via pipx"
+    done
+fi
+export NVM_DIR="$HOME/.nvm"
+# shellcheck source=/dev/null
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+if command -v npm &>/dev/null; then
+    echo "  ↳ Uninstalling global npm language servers..."
+    npm uninstall -g typescript-language-server vscode-langservers-extracted \
+        bash-language-server yaml-language-server pyright &>/dev/null || true
+fi
+if command -v cargo &>/dev/null; then
+    cargo uninstall taplo-cli &>/dev/null && echo "  ↳ Uninstalled taplo via cargo"
+fi
+rm -f "$HOME/.local/bin/marksman"
+echo "  ✅ Language servers removed"
 
 # ── Midnight Commander (if leftover from older branch) ──────────────
 if command -v mc &>/dev/null; then
